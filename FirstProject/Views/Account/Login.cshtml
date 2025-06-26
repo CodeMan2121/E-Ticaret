@@ -1,0 +1,16 @@
+﻿
+@addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+}
+    <form asp-controller="Account" asp-action="Login" method="post">
+
+        <label for="email">Email</label><br>
+        <input type="email" id="email" name="email"><br>
+
+        <label for="password">Password</label><br>
+        <input type="password" id="password" name="password"><br /><br />
+
+        <button type="submit" id="login" name="login">Login</button>
+
+        <button type="submit" id="button2" name="register">Register</button>
+    </form>

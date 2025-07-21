@@ -1,31 +1,45 @@
+using FirstProject.Concretes;
+using FirstProject.Interfaces;
+using FirstProject.Models;
+using FirstProject.Models.Authentication;
 using FirstProject.Models.Context;
 using FirstProject.Models.Repositories;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//builder.Services.AddSingleton<ExampleDbContext>();
-//builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddTransient<IProductRepository, ProductRepository>();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new() { Title = "My API", Version = "v1" });
-});
+
+
+builder.Services.AddControllersWithViews();
+
+builder.Services.AddSession();
+builder.Services.AddAuthentication();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+builder.Services.AddValidatorsFromAssemblyContaining<UserValidator>();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddRazorPages();
 
 
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
 
-app.UseSwagger();
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "First Project with Intern V1");
-});
+
+//JWT devreye giriyor.
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseSession();//bunun yerine artýk JWT kullanýlacak ama durabilir.
 
 app.MapControllerRoute(
     name: "default",

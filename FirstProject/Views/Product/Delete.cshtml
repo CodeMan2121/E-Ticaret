@@ -1,5 +1,41 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
+@model FirstProject.Models.Product
+
+<h2>Ürün Sil</h2>
+@* 
+<form asp-controller="Product" asp-action="DeleteConfirmed" method="post" asp-route-id="@Model.ProductId">
+    <div>
+        <label for="ProductId">Ürün ID:</label>
+        <input type="number" id="ProductId" name="ProductId" required />
+    </div>
+    <button type="submit">Sil</button>
+</form> *@
+@* <form asp-controller="Product" asp-action="DeleteConfirmed" asp-route-id="@Model.ProductId" method="post">
+    <input type="hidden" asp-for="ProductId" />
+    <div>
+        <label>Ürün Adı:</label>
+        <span>@Model.ProductName</span>
+    </div>
+    <div>
+        <label>Fiyat:</label>
+        <span>@Model.Quantity</span>
+    </div>
+    <button type="submit">Sil</button>
+</form> *@
+
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>First Name</dt>
+        <dd>@Model.ProductName</dd>
+        <dt>Last Name</dt>
+        <dd>@Model.Quantity</dd>
+    </dl>
+
+    @using (Html.BeginForm("Delete", "Product", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.ProductId)
+        <input type="submit" value="Delete" class="btn btn-danger" />
+    }
+</div>

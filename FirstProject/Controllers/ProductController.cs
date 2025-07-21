@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FirstProject.Controllers
 {
-    [ApiController]
+    
     [Route("[controller]")]
     public class ProductController : Controller
     {
@@ -21,23 +21,48 @@ namespace FirstProject.Controllers
             return View();
         }
 
-        [HttpPost]
+        [HttpPost("AddProduct")]
         public IActionResult AddProduct(Product product)
         {
             _repository.Add(product);
-            return View();
-        }
-        [HttpDelete]
-        public IActionResult Delete(int id)
-        {
-            _repository.Delete(id);
-            return View();
+            return RedirectToAction("GetAll");
         }
 
-        [HttpGet("Get")]
+
+        [HttpGet("Delete/{id}")]
+        public IActionResult Delete(int id)
+        {
+            var product = _repository.Get(id);
+            return View(product);
+        }
+
+        [HttpPost("Delete/{id}")]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            _repository.Delete(id);
+            return RedirectToAction("GetAll");
+        }
+
+
+        [HttpGet("Update/{id}")]
+        public IActionResult Update(int id)
+        {
+            var product = _repository.Get(id);
+            return View(product);
+        }
+
+        [HttpPost("Update/{id}")]
+        public IActionResult Update(Product product)
+        {
+            _repository.Update(product);
+            return RedirectToAction("GetAll");
+        }
+
+        
+        [HttpGet("Get/{id}")]
         public IActionResult Get(int id) { 
-            _repository.Get(id);
-            return View();
+         var product = _repository.Get(id);
+            return View(product);//bu int ile id'si belirtilen product, cshtml dosyasına gidip orada @model olarak tanımlanır.
         }
 
         [HttpGet("GetAll")]

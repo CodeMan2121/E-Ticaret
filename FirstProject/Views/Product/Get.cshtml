@@ -1,5 +1,29 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers 
+@model FirstProject.Models.Product
+
 @{
+    ViewData["Title"] = "Ürün Detayı";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (Model != null)
+{
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Ürün Adı: @Model.ProductName</h5>
+            <p class="card-text">Adet: @Model.Quantity</p>
+            <p class="card-text text-muted">Ürün ID: @Model.ProductId</p>
+            <button asp-controller="Product" asp-action="Update" asp-route-id="@Model.ProductId" class="btn btn-primary">Güncelle</button>
+            <button asp-controller="Product" asp-action="Delete" asp-route-id="@Model.ProductId" class="btn btn-danger">Sil</button>
+
+
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        Ürün bulunamadı.
+    </div>
 }

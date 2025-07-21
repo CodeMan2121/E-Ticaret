@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
 namespace FirstProject.Models.Context
 {
-    public class ApplicationDbContext:DbContext
+    public class ApplicationDbContext: DbContext
     {
         //public ApplicationDbContext()
         //{
@@ -13,7 +12,7 @@ namespace FirstProject.Models.Context
             
         }
 
-        DbSet<User> Users { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

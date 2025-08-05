@@ -1,9 +1,8 @@
 ﻿namespace FirstProject.Models
 {
-    public class UserLoginRequest
+    public class GenerateTokenRequest
     {
         public string Email { get; set; }
-        public string Password { get; set; }
         public List<string> Roles { get; set; }
     }
 }

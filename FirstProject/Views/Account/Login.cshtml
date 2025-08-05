@@ -17,7 +17,7 @@
         <input asp-for="Password" class="form-control" type="password" />
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
-
+    <p style="color:red">@ViewBag.IncorrectPassword</p>
     <p style="color:red">@ViewBag.ErrorMessage</p>
 
     <button type="submit" class="btn btn-primary">Login</button>

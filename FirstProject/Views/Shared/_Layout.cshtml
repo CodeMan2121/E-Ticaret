@@ -81,6 +81,75 @@
             }
     </style>
 </head>
+<script>
+    async function refreshAccessToken() {
+        try {
+            const response = await fetch('/Account/Refresh', {
+                method: 'POST',
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                console.log("Access token yenilendi.");
+                return true;
+            } else {
+                console.error("Yenileme başarısız. Login sayfasına yönlendiriliyor.");
+                window.location.href = '/Account/Login';
+                return false;
+            }
+        } catch (error) {
+            console.error("Yenileme isteği başarısız:", error);
+            window.location.href = '/Account/Login';
+            return false;
+        }
+    }
+
+    async function checkAccessToken() {
+        try {
+            const response = await fetch('/Account/AuthTryPage', {
+                method: 'GET',
+                credentials: 'include'
+            });
+
+            if (response.status === 401) {
+                console.warn("Access token geçersiz. Yenileme gerekiyor.");
+                   await refreshAccessToken();
+            }
+        } catch (error) {
+            console.error("Token kontrol hatası:", error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        checkAccessToken();
+    });
+
+    setInterval(() => {
+        checkAccessToken();
+    }, 30000); // Her 30 saniyede bir kontrol
+
+    const originalFetch = window.fetch;
+
+    window.fetch = async function (url, options = {}) {
+        options = {
+            credentials: 'include',
+            ...options
+        };
+
+        let response = await originalFetch(url, options);
+
+        if (response.status === 401 && !options._retryRefresh) {
+            const refreshed = await refreshAccessToken();
+            if (refreshed) {
+                options._retryRefresh = true;
+                return await originalFetch(url, options);
+            }
+        }
+
+        return response;
+    };
+</script>
+
 <body>
     <div class="container">
         @RenderBody()

@@ -1,6 +1,9 @@
 ﻿using FirstProject.Models;
 using FirstProject.Models.Context;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace FirstProject.Controllers
 {
@@ -16,17 +19,29 @@ namespace FirstProject.Controllers
             return View();
         }
         
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            HttpContext.Session.Clear();
-            return RedirectToAction("Login", "Account");
+            var userEmail = User.Identity?.Name;
+            var user = _context.Users.FirstOrDefault(u => u.Email == userEmail);
+            if (user != null)
+            {
+                user.RefreshToken = null;
+                user.RefreshTokenExpireDate = null;
+                _context.SaveChanges();
+            }
+            //HttpContext.Session.Clear();
+            await HttpContext.SignOutAsync();
+            HttpContext.Response.Cookies.Delete("access_token");
+            HttpContext.Response.Cookies.Delete("refresh_token");
+            return RedirectToAction("Index", "Home");
         }
 
+        [Authorize(Roles ="Admin")]
         public IActionResult AdminPanel()
         {
-            HttpContext.Session.GetString("email");
-            var tempData = TempData["email"];
-            return View(tempData);
+            //HttpContext.Session.GetString("email");
+            ViewBag.HgAdmin = TempData["email"];//from AccountController
+            return View();
         }
     }
 }
